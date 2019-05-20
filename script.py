@@ -19,9 +19,19 @@ from draw import *
   with the name being used.
   ==================== """
 def first_pass( commands ):
-
     name = ''
     num_frames = 1
+    if not 'frames' in [x['op'] for x in commands]:
+        return
+    if not 'basename' in [x['op'] for x in commands]:
+        name = 'default'
+    for command in commands:
+        if command['op'] == 'frames':
+            num_frames = int(command['args'][0])
+        elif command['op'] == 'basename':
+            name = command['args'][0]
+    if num_frames == 1:
+        return
 
     return (name, num_frames)
 
@@ -44,6 +54,10 @@ def first_pass( commands ):
   ===================="""
 def second_pass( commands, num_frames ):
     frames = [ {} for i in range(num_frames) ]
+    for command in commands:
+        if command['op'] == 'vary':
+            pass
+
 
     return frames
 
@@ -56,6 +70,8 @@ def run(filename):
 
     if p:
         (commands, symbols) = p
+
+        print(commands)
     else:
         print "Parsing failed."
         return
@@ -97,7 +113,7 @@ def run(filename):
     coords1 = []
 
     for command in commands:
-        print command
+        # print command
         c = command['op']
         args = command['args']
         knob_value = 1
